@@ -1,9 +1,11 @@
-
+import { Auth } from "./components/auth"
 
 const App = () => {
 
   return (
-    <>Hello</>
+    <>
+      <Auth/>
+    </>
   )
 }
 
