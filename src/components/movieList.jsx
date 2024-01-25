@@ -22,6 +22,8 @@ export const MovieList = () => {
                     <button onClick={()=>context.updateMovieTitle(movie.id)}>Update Title</button>
                 </div>
             ))}
+            <input type="file" onChange={(e)=>context.setFileUpload(e.target.files[0])}/>
+            <button onClick={()=>context.uploadFile()}>Upload File</button>
         </div>
     )
 }

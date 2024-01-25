@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 
 import { addDoc, collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db, auth } from "../config/firebase";
+import { db, auth, storage } from "../config/firebase";
+import { ref, uploadBytes } from "firebase/storage";
 
 const MyContext = createContext();
 const MyProvider = (props) => {
@@ -12,11 +13,10 @@ const MyProvider = (props) => {
     const [newMovieTitle,setNewMovieTitle] = useState("");
     const [newReleaseDate,setNewReleaseDate] = useState(0);
     const [newIsOscar,setIsOscar] = useState(false);
-
     const movieCollectionRef = collection(db, "movies")
-
     const [updatedTitle,setUpdatedTitle] = useState("");
-    
+    const [fileUpload, setFileUpload] = useState(null);
+
     const getList = async () => {
         try {
                 const data = await getDocs(movieCollectionRef)
@@ -55,6 +55,19 @@ const MyProvider = (props) => {
         getList();
     }
 
+    const uploadFile = async () => {
+        if (!fileUpload) return;
+        console.log("It runs")
+        const fileFolderRef = ref(storage,`projectFiles/${fileUpload.name}`);
+        try {
+            await uploadBytes(fileFolderRef, fileUpload)
+            console.log("File Uploaded")
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
     return(
         <MyContext.Provider value={{
             list:list,
@@ -67,6 +80,8 @@ const MyProvider = (props) => {
             deleteMovie:deleteMovie,
             setUpdatedTitle:setUpdatedTitle,
             updateMovieTitle:updateMovieTitle,
+            uploadFile:uploadFile,
+            setFileUpload:setFileUpload,
 
         }}>
             { props.children }
