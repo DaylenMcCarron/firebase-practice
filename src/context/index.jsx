@@ -1,8 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 import { addDoc, collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db, auth, storage } from "../config/firebase";
 import { ref, uploadBytes } from "firebase/storage";
+import mapboxgl from "mapbox-gl";
 
 const MyContext = createContext();
 const MyProvider = (props) => {
@@ -16,6 +17,12 @@ const MyProvider = (props) => {
     const movieCollectionRef = collection(db, "movies")
     const [updatedTitle,setUpdatedTitle] = useState("");
     const [fileUpload, setFileUpload] = useState(null);
+
+    const mapContainer = useRef(null);
+    const [lng, setLng] = useState(-70.9);
+    const [lat, setLat] = useState(42.35);
+    const [zoom, setZoom] = useState(9);
+
 
     const getList = async () => {
         try {
@@ -82,6 +89,7 @@ const MyProvider = (props) => {
             updateMovieTitle:updateMovieTitle,
             uploadFile:uploadFile,
             setFileUpload:setFileUpload,
+            mapContainer:mapContainer,
 
         }}>
             { props.children }
